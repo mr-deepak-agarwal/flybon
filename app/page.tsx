@@ -64,13 +64,13 @@ export default function Home() {
             <a href="tel:+919764612228" className="phone-link">
               +91 97646 12228
             </a>
-            <p className="owner-label">Somin C. Gseen &nbsp;—&nbsp; Owner</p>
+            <p className="owner-label"></p>
           </div>
 
           <div className="rating-bar">
             <span className="stars">★★★★★</span>
             <span className="rating-num">4.9</span>
-            <span className="rating-count">/ 390 reviews</span>
+            <span className="rating-count">/ 376 reviews</span>
           </div>
         </div>
 
