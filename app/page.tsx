@@ -3,513 +3,625 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
 export default function Home() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    setLoaded(true);
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    resize();
-    window.addEventListener("resize", resize);
-
-    // Subtle floating ink-dot particles
-    const particles: {
-      x: number; y: number; size: number;
-      speed: number; opacity: number; color: string;
-    }[] = [];
-    for (let i = 0; i < 40; i++) {
-      particles.push({
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight,
-        size: Math.random() * 1.5 + 0.3,
-        speed: Math.random() * 0.25 + 0.08,
-        opacity: Math.random() * 0.12 + 0.03,
-        color: Math.random() > 0.6 ? "#FFD600" : "#ffffff",
-      });
-    }
-    let raf: number;
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach((p) => {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.globalAlpha = p.opacity;
-        ctx.fill();
-        p.y -= p.speed;
-        if (p.y < -10) {
-          p.y = canvas.height + 10;
-          p.x = Math.random() * canvas.width;
-        }
-      });
-      ctx.globalAlpha = 1;
-      raf = requestAnimationFrame(draw);
-    };
-    draw();
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("resize", resize);
-    };
+    const t = setTimeout(() => setLoaded(true), 60);
+    return () => clearTimeout(t);
   }, []);
 
   const products = [
-    { label: "Rubber Stamps", icon: "◈" },
-    { label: "Nylon Stamps", icon: "◉" },
-    { label: "Self-Inking", icon: "◎" },
-    { label: "Custom Designs", icon: "◇" },
+    { label: "Rubber Stamps", desc: "Precision-cut for crisp, lasting impressions.", icon: "✦" },
+    { label: "Nylon Stamps", desc: "Durable, flexible, and detail-perfect.", icon: "✧" },
+    { label: "Self-Inking", desc: "Built-in ink pad, re-inkable and reliable.", icon: "◈" },
+    { label: "Custom Designs", desc: "Artwork, logos, signatures — anything.", icon: "◇" },
   ];
 
   return (
-    <main className="flybon-root">
-      <canvas ref={canvasRef} className="flybon-canvas" />
+    <main className="root">
 
-      {/* Noise texture overlay */}
-      <div className="flybon-noise" />
+      {/* ── BACKGROUND ── */}
+      <div className="bg-texture" />
+      <div className="bg-grain" />
 
-      {/* Top bar */}
-      <header className={`flybon-header ${loaded ? "in" : ""}`}>
-        <div className="flybon-delivery">
-          <span className="flybon-delivery-num">30</span>
-          <span className="flybon-delivery-label">min<br />delivery</span>
+      {/* ── HEADER ── */}
+      <header className={`header ${loaded ? "in" : ""}`}>
+        <div className="header-pill">
+          <span className="pill-icon">⚡</span>
+          <span className="pill-text">30-minute delivery</span>
         </div>
-        <div className="flybon-brand-top">
-          FLY<span className="gold">BON</span>
-        </div>
-        <div className="flybon-badge">
-          <span className="flybon-badge-num">4.9</span>
-          <span className="flybon-badge-stars">★★★★★</span>
-          <span className="flybon-badge-reviews">390 reviews</span>
-        </div>
+        <nav className="header-nav">
+          <span className="nav-item">Goa</span>
+          <span className="nav-dot">·</span>
+          <span className="nav-item">Bengaluru</span>
+        </nav>
       </header>
 
-      {/* Hero */}
-      <section className="flybon-hero">
-        <div className={`flybon-logo-wrap ${loaded ? "in" : ""}`}>
-          <div className="flybon-logo-ring" />
-          <Image
-            src="/logo.png"
-            alt="FlyBon Stamps"
-            width={120}
-            height={120}
-            priority
-            style={{ objectFit: "contain", position: "relative", zIndex: 2 }}
-          />
-        </div>
+      {/* ── HERO ── */}
+      <section className="hero">
 
-        <div className={`flybon-title-wrap ${loaded ? "in" : ""}`}>
-          <p className="flybon-eyebrow">Est. Goa &amp; Bengaluru</p>
-          <h1 className="flybon-title">
-            FLYBON<br />
-            <span className="flybon-title-stamps">STAMPS</span>
+        {/* Left editorial column */}
+        <div className={`hero-left ${loaded ? "in" : ""}`}>
+          <p className="eyebrow">Est. 2010 &nbsp;/&nbsp; Handcraft Studio</p>
+
+          <h1 className="brand-title">
+            <span className="brand-fly">Fly</span>
+            <span className="brand-bon">Bon</span>
           </h1>
-          <p className="flybon-tagline">
-            Precision Crafted &nbsp;·&nbsp; Fast Delivered &nbsp;·&nbsp; Trusted Quality
+
+          <div className="stamp-word-wrap">
+            <span className="stamp-word">STAMPS</span>
+            <div className="stamp-underline" />
+          </div>
+
+          <p className="hero-desc">
+            We craft rubber, nylon, and self‑inking stamps with obsessive precision.
+            Every impression tells your story — delivered to your door in minutes.
           </p>
+
+          <div className="cta-block">
+            <p className="cta-eyebrow">Call to order</p>
+            <a href="tel:+919764612228" className="phone-link">
+              +91 97646 12228
+            </a>
+            <p className="owner-label">Somin C. Gseen &nbsp;—&nbsp; Owner</p>
+          </div>
+
+          <div className="rating-bar">
+            <span className="stars">★★★★★</span>
+            <span className="rating-num">4.9</span>
+            <span className="rating-count">/ 390 reviews</span>
+          </div>
         </div>
 
-        {/* Divider */}
-        <div className={`flybon-divider ${loaded ? "in" : ""}`}>
-          <span className="flybon-divider-line" />
-          <span className="flybon-divider-diamond">◆</span>
-          <span className="flybon-divider-line" />
-        </div>
-
-        {/* Products */}
-        <div className={`flybon-products ${loaded ? "in" : ""}`}>
-          {products.map((p) => (
-            <div key={p.label} className="flybon-product-chip">
-              <span className="flybon-chip-icon">{p.icon}</span>
-              <span className="flybon-chip-label">{p.label}</span>
+        {/* Right stamp showcase */}
+        <div className={`hero-right ${loaded ? "in" : ""}`}>
+          <div className="logo-frame">
+            <div className="logo-circle">
+              <Image
+                src="/logo.png"
+                alt="FlyBon Stamps"
+                width={110}
+                height={110}
+                priority
+                style={{ objectFit: "contain" }}
+              />
             </div>
-          ))}
-        </div>
-
-        {/* Branches */}
-        <div className={`flybon-branches ${loaded ? "in" : ""}`}>
-          <div className="flybon-branch">
-            <span className="flybon-branch-city">GOA</span>
-            <span className="flybon-branch-tag">Branch</span>
+            <div className="frame-corner tl" />
+            <div className="frame-corner tr" />
+            <div className="frame-corner bl" />
+            <div className="frame-corner br" />
+            <div className="frame-label">Since 2010</div>
           </div>
-          <div className="flybon-branch-sep">◆</div>
-          <div className="flybon-branch">
-            <span className="flybon-branch-city">BENGALURU</span>
-            <span className="flybon-branch-tag">Branch</span>
-          </div>
-        </div>
 
-        {/* CTA */}
-        <div className={`flybon-cta ${loaded ? "in" : ""}`}>
-          <p className="flybon-cta-label">Call to order</p>
-          <a href="tel:+919764612228" className="flybon-phone">
-            +91 <strong>976 461</strong> 2228
-          </a>
-          <p className="flybon-owner">Somin C. Gseen &nbsp;—&nbsp; Owner</p>
+          <div className="tagline-strip">
+            <span>Precision Crafted</span>
+            <span className="strip-dot">◆</span>
+            <span>Fast Delivered</span>
+            <span className="strip-dot">◆</span>
+            <span>Trusted Quality</span>
+          </div>
         </div>
       </section>
 
-      {/* Bottom accent bar */}
-      <div className="flybon-bottombar" />
+      {/* ── DIVIDER ── */}
+      <div className={`divider-row ${loaded ? "in" : ""}`}>
+        <span className="divider-line" />
+        <span className="divider-text">our craft</span>
+        <span className="divider-line" />
+      </div>
+
+      {/* ── PRODUCTS ── */}
+      <section className={`products ${loaded ? "in" : ""}`}>
+        {products.map((p, i) => (
+          <div key={p.label} className="product-card" style={{ animationDelay: `${0.85 + i * 0.1}s` }}>
+            <span className="card-icon">{p.icon}</span>
+            <h3 className="card-title">{p.label}</h3>
+            <p className="card-desc">{p.desc}</p>
+          </div>
+        ))}
+      </section>
+
+      {/* ── BRANCHES ── */}
+      <section className={`branches ${loaded ? "in" : ""}`}>
+        <div className="branch-card">
+          <p className="branch-tag">Branch 01</p>
+          <h2 className="branch-city">Goa</h2>
+          <p className="branch-state">India</p>
+        </div>
+        <div className="branch-divider">
+          <span className="branch-divider-icon">◆</span>
+        </div>
+        <div className="branch-card branch-card--right">
+          <p className="branch-tag">Branch 02</p>
+          <h2 className="branch-city">Bengaluru</h2>
+          <p className="branch-state">India</p>
+        </div>
+      </section>
+
+      {/* ── FOOTER ── */}
+      <footer className="footer">
+        <span className="footer-brand">FlyBon Stamps</span>
+        <span className="footer-sep">·</span>
+        <span className="footer-copy">Handcrafted impressions since 2010</span>
+      </footer>
 
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,600&family=DM+Mono:wght@300;400;500&family=Unbounded:wght@400;700;900&display=swap');
 
-        .flybon-root {
-          position: relative;
+        :root {
+          --cream: #F5EFE0;
+          --cream-dark: #EBE2CC;
+          --ink: #1A1209;
+          --ink-soft: #2C2010;
+          --saffron: #E8720C;
+          --saffron-light: #F5A44A;
+          --gold: #C8922A;
+          --gold-light: #DEB96A;
+          --muted: #8C7A5A;
+          --muted-light: #B09A78;
+          --border: rgba(26,18,9,0.12);
+          --border-strong: rgba(26,18,9,0.22);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        .root {
           min-height: 100vh;
-          overflow: hidden;
-          background: #0d0d0d;
-          font-family: 'DM Sans', sans-serif;
-          color: #f0ede6;
+          background: var(--cream);
+          color: var(--ink);
+          font-family: 'DM Mono', monospace;
+          position: relative;
+          overflow-x: hidden;
           display: flex;
           flex-direction: column;
-          align-items: center;
         }
 
-        .flybon-canvas {
+        /* ── BACKGROUNDS ── */
+        .bg-texture {
           position: fixed;
           inset: 0;
+          pointer-events: none;
           z-index: 0;
-          pointer-events: none;
+          background:
+            radial-gradient(ellipse 80% 60% at 15% 10%, rgba(232,114,12,0.07) 0%, transparent 60%),
+            radial-gradient(ellipse 60% 50% at 85% 80%, rgba(200,146,42,0.09) 0%, transparent 60%),
+            radial-gradient(ellipse 50% 40% at 50% 50%, rgba(235,226,204,0.5) 0%, transparent 70%);
         }
-
-        .flybon-noise {
+        .bg-grain {
           position: fixed;
           inset: 0;
-          z-index: 1;
           pointer-events: none;
-          opacity: 0.035;
-          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-          background-size: 200px 200px;
+          z-index: 1;
+          opacity: 0.045;
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+          background-size: 256px;
+        }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(24px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to   { opacity: 1; }
+        }
+        @keyframes cardIn {
+          from { opacity: 0; transform: translateY(18px); }
+          to   { opacity: 1; transform: none; }
         }
 
         /* ── HEADER ── */
-        .flybon-header {
+        .header {
           position: relative;
           z-index: 10;
-          width: 100%;
-          max-width: 680px;
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 2rem 2rem 0;
+          padding: 1.5rem 3rem;
+          border-bottom: 1px solid var(--border);
           opacity: 0;
-          transform: translateY(-16px);
-          transition: opacity 0.6s ease 0.1s, transform 0.6s ease 0.1s;
         }
-        .flybon-header.in {
-          opacity: 1;
-          transform: none;
+        .header.in {
+          animation: fadeIn 0.5s ease 0.05s forwards;
         }
 
-        .flybon-delivery {
+        .header-pill {
           display: flex;
-          align-items: baseline;
-          gap: 6px;
-        }
-        .flybon-delivery-num {
-          font-family: 'Playfair Display', serif;
-          font-size: 2.6rem;
-          font-weight: 900;
-          color: #CC0000;
-          line-height: 1;
-        }
-        .flybon-delivery-label {
-          font-size: 0.6rem;
-          letter-spacing: 0.18em;
-          text-transform: uppercase;
-          color: rgba(240,237,230,0.35);
-          line-height: 1.6;
-        }
-
-        .flybon-brand-top {
-          font-family: 'Playfair Display', serif;
-          font-size: 0.75rem;
-          font-weight: 700;
-          letter-spacing: 0.45em;
-          text-transform: uppercase;
-          color: rgba(240,237,230,0.25);
-        }
-        .flybon-brand-top .gold { color: rgba(255,214,0,0.5); }
-
-        .flybon-badge {
-          display: flex;
-          flex-direction: column;
-          align-items: flex-end;
-          gap: 1px;
-        }
-        .flybon-badge-num {
-          font-family: 'Playfair Display', serif;
-          font-size: 1.6rem;
-          font-weight: 700;
-          color: #FFD600;
-          line-height: 1;
-        }
-        .flybon-badge-stars {
-          font-size: 0.55rem;
+          align-items: center;
+          gap: 0.5rem;
+          background: var(--saffron);
+          color: #fff;
+          padding: 0.35rem 0.9rem;
+          border-radius: 999px;
+          font-size: 0.65rem;
           letter-spacing: 0.08em;
-          color: rgba(255,214,0,0.6);
+          font-weight: 500;
         }
-        .flybon-badge-reviews {
-          font-size: 0.55rem;
-          letter-spacing: 0.12em;
+        .pill-icon { font-size: 0.7rem; }
+
+        .header-nav {
+          display: flex;
+          align-items: center;
+          gap: 0.6rem;
+          font-size: 0.65rem;
+          letter-spacing: 0.2em;
           text-transform: uppercase;
-          color: rgba(240,237,230,0.3);
+          color: var(--muted);
         }
+        .nav-dot { color: var(--gold); }
 
         /* ── HERO ── */
-        .flybon-hero {
+        .hero {
           position: relative;
           z-index: 10;
-          width: 100%;
-          max-width: 680px;
-          flex: 1;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 0;
+          min-height: 82vh;
+          align-items: stretch;
+        }
+
+        /* LEFT */
+        .hero-left {
+          padding: 4rem 3rem 4rem 3rem;
           display: flex;
           flex-direction: column;
-          align-items: center;
           justify-content: center;
-          padding: 3rem 2rem 5rem;
-          gap: 2rem;
-          text-align: center;
+          gap: 1.6rem;
+          border-right: 1px solid var(--border);
+          opacity: 0;
+        }
+        .hero-left.in {
+          animation: fadeUp 0.75s cubic-bezier(0.22,1,0.36,1) 0.2s forwards;
         }
 
-        /* Logo */
-        .flybon-logo-wrap {
-          position: relative;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 160px;
-          height: 160px;
-          opacity: 0;
-          transform: scale(0.85);
-          transition: opacity 0.8s cubic-bezier(0.22,1,0.36,1) 0.3s,
-                      transform 0.8s cubic-bezier(0.22,1,0.36,1) 0.3s;
-        }
-        .flybon-logo-wrap.in {
-          opacity: 1;
-          transform: scale(1);
-        }
-        .flybon-logo-ring {
-          position: absolute;
-          inset: 0;
-          border-radius: 50%;
-          border: 1px solid rgba(255,214,0,0.18);
-          animation: ringPulse 4s ease infinite;
-        }
-        .flybon-logo-ring::before {
-          content: '';
-          position: absolute;
-          inset: 8px;
-          border-radius: 50%;
-          border: 1px solid rgba(255,214,0,0.08);
-        }
-        @keyframes ringPulse {
-          0%,100% { box-shadow: 0 0 0 0 rgba(255,214,0,0.08); }
-          50% { box-shadow: 0 0 0 16px rgba(255,214,0,0); }
-        }
-
-        /* Title */
-        .flybon-title-wrap {
-          opacity: 0;
-          transform: translateY(20px);
-          transition: opacity 0.7s ease 0.5s, transform 0.7s ease 0.5s;
-        }
-        .flybon-title-wrap.in {
-          opacity: 1;
-          transform: none;
-        }
-        .flybon-eyebrow {
-          font-size: 0.65rem;
-          letter-spacing: 0.4em;
+        .eyebrow {
+          font-size: 0.58rem;
+          letter-spacing: 0.35em;
           text-transform: uppercase;
-          color: rgba(240,237,230,0.3);
-          margin: 0 0 0.75rem;
-        }
-        .flybon-title {
-          font-family: 'Playfair Display', serif;
-          font-size: clamp(3.5rem, 10vw, 6.5rem);
-          font-weight: 900;
-          line-height: 0.92;
-          letter-spacing: -0.01em;
-          color: #f0ede6;
-          margin: 0 0 1rem;
-        }
-        .flybon-title-stamps {
-          -webkit-text-stroke: 1.5px #FFD600;
-          color: transparent;
-          letter-spacing: 0.12em;
-        }
-        .flybon-tagline {
-          font-size: 0.7rem;
-          font-weight: 300;
-          letter-spacing: 0.28em;
-          text-transform: uppercase;
-          color: rgba(240,237,230,0.4);
-          margin: 0;
+          color: var(--muted);
         }
 
-        /* Divider */
-        .flybon-divider {
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-          width: 100%;
-          max-width: 320px;
-          opacity: 0;
-          transition: opacity 0.6s ease 0.7s;
-        }
-        .flybon-divider.in { opacity: 1; }
-        .flybon-divider-line {
-          flex: 1;
-          height: 1px;
-          background: linear-gradient(90deg, transparent, rgba(255,214,0,0.25));
-        }
-        .flybon-divider-line:last-child {
-          background: linear-gradient(90deg, rgba(255,214,0,0.25), transparent);
-        }
-        .flybon-divider-diamond {
-          font-size: 0.5rem;
-          color: #FFD600;
-          opacity: 0.6;
-        }
-
-        /* Products */
-        .flybon-products {
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: center;
-          gap: 0.6rem;
-          opacity: 0;
-          transform: translateY(12px);
-          transition: opacity 0.6s ease 0.8s, transform 0.6s ease 0.8s;
-        }
-        .flybon-products.in {
-          opacity: 1;
-          transform: none;
-        }
-        .flybon-product-chip {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          padding: 0.45rem 1rem;
-          border: 0.5px solid rgba(255,214,0,0.15);
-          border-radius: 2px;
-          background: rgba(255,214,0,0.03);
-          transition: border-color 0.2s, background 0.2s;
-          cursor: default;
-        }
-        .flybon-product-chip:hover {
-          border-color: rgba(255,214,0,0.35);
-          background: rgba(255,214,0,0.06);
-        }
-        .flybon-chip-icon {
-          font-size: 0.65rem;
-          color: rgba(255,214,0,0.5);
-        }
-        .flybon-chip-label {
-          font-size: 0.62rem;
-          letter-spacing: 0.22em;
-          text-transform: uppercase;
-          font-weight: 500;
-          color: rgba(240,237,230,0.55);
-        }
-
-        /* Branches */
-        .flybon-branches {
-          display: flex;
-          align-items: center;
-          gap: 2rem;
-          opacity: 0;
-          transform: translateY(12px);
-          transition: opacity 0.6s ease 0.9s, transform 0.6s ease 0.9s;
-        }
-        .flybon-branches.in {
-          opacity: 1;
-          transform: none;
-        }
-        .flybon-branch {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 3px;
-        }
-        .flybon-branch-city {
-          font-family: 'Playfair Display', serif;
-          font-size: 1.1rem;
+        .brand-title {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: clamp(4rem, 9vw, 7.5rem);
           font-weight: 700;
-          letter-spacing: 0.2em;
-          color: #FFD600;
+          line-height: 0.88;
+          letter-spacing: -0.02em;
         }
-        .flybon-branch-tag {
-          font-size: 0.55rem;
-          letter-spacing: 0.28em;
-          text-transform: uppercase;
-          color: rgba(240,237,230,0.28);
-        }
-        .flybon-branch-sep {
-          font-size: 0.4rem;
-          color: rgba(255,214,0,0.2);
+        .brand-fly { color: var(--ink); }
+        .brand-bon {
+          color: var(--saffron);
+          font-style: italic;
         }
 
-        /* CTA */
-        .flybon-cta {
+        .stamp-word-wrap {
           display: flex;
           flex-direction: column;
-          align-items: center;
-          gap: 0.5rem;
-          opacity: 0;
-          transform: translateY(12px);
-          transition: opacity 0.6s ease 1s, transform 0.6s ease 1s;
+          gap: 6px;
         }
-        .flybon-cta.in {
-          opacity: 1;
-          transform: none;
+        .stamp-word {
+          font-family: 'Unbounded', sans-serif;
+          font-size: clamp(1rem, 2.5vw, 1.6rem);
+          font-weight: 900;
+          letter-spacing: 0.45em;
+          color: var(--ink-soft);
+          opacity: 0.12;
         }
-        .flybon-cta-label {
-          font-size: 0.6rem;
+        .stamp-underline {
+          height: 2px;
+          width: 5rem;
+          background: var(--saffron);
+        }
+
+        .hero-desc {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 1.1rem;
+          font-weight: 300;
+          line-height: 1.7;
+          color: var(--ink-soft);
+          max-width: 38ch;
+          font-style: italic;
+        }
+
+        .cta-block {
+          display: flex;
+          flex-direction: column;
+          gap: 0.4rem;
+        }
+        .cta-eyebrow {
+          font-size: 0.58rem;
           letter-spacing: 0.3em;
           text-transform: uppercase;
-          color: rgba(240,237,230,0.28);
-          margin: 0;
+          color: var(--muted);
         }
-        .flybon-phone {
-          font-family: 'Playfair Display', serif;
-          font-size: clamp(1.8rem, 5vw, 2.6rem);
-          font-weight: 700;
-          color: #f0ede6;
+        .phone-link {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+          font-weight: 600;
+          color: var(--ink);
           text-decoration: none;
-          letter-spacing: 0.04em;
+          letter-spacing: 0.02em;
+          border-bottom: 2px solid var(--saffron);
+          padding-bottom: 2px;
+          display: inline-block;
           transition: color 0.2s;
         }
-        .flybon-phone:hover { color: #FFD600; }
-        .flybon-phone strong { color: #CC0000; font-weight: 700; }
-        .flybon-owner {
+        .phone-link:hover { color: var(--saffron); }
+        .owner-label {
           font-size: 0.6rem;
-          letter-spacing: 0.22em;
+          letter-spacing: 0.2em;
           text-transform: uppercase;
-          color: rgba(240,237,230,0.28);
-          margin: 0;
+          color: var(--muted-light);
         }
 
-        /* Bottom bar */
-        .flybon-bottombar {
-          position: fixed;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          height: 3px;
-          background: linear-gradient(90deg, #FFD600 0%, #CC0000 50%, #FFD600 100%);
-          z-index: 20;
+        .rating-bar {
+          display: flex;
+          align-items: baseline;
+          gap: 0.5rem;
+          padding-top: 0.5rem;
+          border-top: 1px solid var(--border);
+        }
+        .stars {
+          font-size: 0.65rem;
+          color: var(--gold);
+          letter-spacing: 0.1em;
+        }
+        .rating-num {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 1.3rem;
+          font-weight: 600;
+          color: var(--ink);
+        }
+        .rating-count {
+          font-size: 0.6rem;
+          color: var(--muted);
+          letter-spacing: 0.1em;
         }
 
-        .gold { color: #FFD600; }
+        /* RIGHT */
+        .hero-right {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 2.5rem;
+          padding: 4rem 2.5rem;
+          background: var(--cream-dark);
+          opacity: 0;
+        }
+        .hero-right.in {
+          animation: fadeUp 0.75s cubic-bezier(0.22,1,0.36,1) 0.4s forwards;
+        }
+
+        .logo-frame {
+          position: relative;
+          width: 220px;
+          height: 220px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .logo-circle {
+          width: 160px;
+          height: 160px;
+          border-radius: 50%;
+          background: var(--cream);
+          border: 2px solid var(--border-strong);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 8px 40px rgba(26,18,9,0.1), inset 0 0 0 8px var(--cream-dark);
+        }
+        .frame-corner {
+          position: absolute;
+          width: 18px;
+          height: 18px;
+        }
+        .frame-corner.tl { top: 0; left: 0; border-top: 2px solid var(--gold); border-left: 2px solid var(--gold); }
+        .frame-corner.tr { top: 0; right: 0; border-top: 2px solid var(--gold); border-right: 2px solid var(--gold); }
+        .frame-corner.bl { bottom: 0; left: 0; border-bottom: 2px solid var(--gold); border-left: 2px solid var(--gold); }
+        .frame-corner.br { bottom: 0; right: 0; border-bottom: 2px solid var(--gold); border-right: 2px solid var(--gold); }
+        .frame-label {
+          position: absolute;
+          bottom: -6px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: var(--saffron);
+          color: #fff;
+          font-size: 0.5rem;
+          letter-spacing: 0.3em;
+          text-transform: uppercase;
+          padding: 0.2rem 0.6rem;
+          white-space: nowrap;
+        }
+
+        .tagline-strip {
+          display: flex;
+          align-items: center;
+          gap: 0.8rem;
+          font-size: 0.55rem;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: var(--muted);
+          text-align: center;
+        }
+        .strip-dot { color: var(--gold); font-size: 0.4rem; }
+
+        /* ── DIVIDER ROW ── */
+        .divider-row {
+          position: relative;
+          z-index: 10;
+          display: flex;
+          align-items: center;
+          gap: 1.2rem;
+          padding: 0 3rem;
+          margin: 3.5rem 0 0;
+          opacity: 0;
+        }
+        .divider-row.in {
+          animation: fadeIn 0.6s ease 0.7s forwards;
+        }
+        .divider-line {
+          flex: 1;
+          height: 1px;
+          background: var(--border-strong);
+        }
+        .divider-text {
+          font-size: 0.58rem;
+          letter-spacing: 0.38em;
+          text-transform: uppercase;
+          color: var(--muted-light);
+          white-space: nowrap;
+        }
+
+        /* ── PRODUCTS ── */
+        .products {
+          position: relative;
+          z-index: 10;
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 0;
+          margin: 2.5rem 3rem 0;
+          border: 1px solid var(--border-strong);
+          opacity: 0;
+        }
+        .products.in {
+          animation: fadeIn 0.5s ease 0.8s forwards;
+        }
+
+        .product-card {
+          padding: 2rem 1.5rem;
+          border-right: 1px solid var(--border-strong);
+          display: flex;
+          flex-direction: column;
+          gap: 0.8rem;
+          opacity: 0;
+          transition: background 0.2s;
+          cursor: default;
+        }
+        .products.in .product-card {
+          animation: cardIn 0.5s ease forwards;
+        }
+        .product-card:last-child { border-right: none; }
+        .product-card:hover { background: rgba(232,114,12,0.04); }
+
+        .card-icon {
+          font-size: 1rem;
+          color: var(--saffron);
+        }
+        .card-title {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 1.1rem;
+          font-weight: 600;
+          color: var(--ink);
+          line-height: 1.2;
+        }
+        .card-desc {
+          font-size: 0.62rem;
+          line-height: 1.65;
+          color: var(--muted);
+          letter-spacing: 0.04em;
+        }
+
+        /* ── BRANCHES ── */
+        .branches {
+          position: relative;
+          z-index: 10;
+          display: flex;
+          align-items: stretch;
+          margin: 2.5rem 3rem 0;
+          border: 1px solid var(--border-strong);
+          opacity: 0;
+        }
+        .branches.in {
+          animation: fadeUp 0.55s ease 1s forwards;
+        }
+
+        .branch-card {
+          flex: 1;
+          padding: 2rem 2.5rem;
+          display: flex;
+          flex-direction: column;
+          gap: 0.4rem;
+        }
+        .branch-card--right {
+          text-align: right;
+          align-items: flex-end;
+          background: var(--cream-dark);
+        }
+        .branch-tag {
+          font-size: 0.55rem;
+          letter-spacing: 0.3em;
+          text-transform: uppercase;
+          color: var(--muted-light);
+        }
+        .branch-city {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 2.2rem;
+          font-weight: 700;
+          color: var(--ink);
+          line-height: 1;
+          letter-spacing: -0.01em;
+        }
+        .branch-state {
+          font-size: 0.6rem;
+          letter-spacing: 0.25em;
+          text-transform: uppercase;
+          color: var(--saffron);
+        }
+        .branch-divider {
+          width: 1px;
+          background: var(--border-strong);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .branch-divider-icon {
+          font-size: 0.5rem;
+          color: var(--gold);
+          background: var(--cream);
+          padding: 4px 0;
+        }
+
+        /* ── FOOTER ── */
+        .footer {
+          position: relative;
+          z-index: 10;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.8rem;
+          padding: 2rem 3rem;
+          margin-top: 3.5rem;
+          border-top: 1px solid var(--border);
+          font-size: 0.6rem;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: var(--muted-light);
+        }
+        .footer-sep { color: var(--gold); }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+          .header { padding: 1.2rem 1.5rem; }
+          .hero { grid-template-columns: 1fr; min-height: auto; }
+          .hero-left { padding: 3rem 1.5rem; border-right: none; border-bottom: 1px solid var(--border); }
+          .hero-right { padding: 3rem 1.5rem; }
+          .products { grid-template-columns: 1fr 1fr; margin: 2rem 1.5rem 0; }
+          .product-card:nth-child(2) { border-right: none; }
+          .product-card:nth-child(3) { border-top: 1px solid var(--border-strong); }
+          .product-card:nth-child(4) { border-top: 1px solid var(--border-strong); border-right: none; }
+          .branches { flex-direction: column; margin: 2rem 1.5rem 0; }
+          .branch-card { padding: 1.5rem; }
+          .branch-card--right { text-align: left; align-items: flex-start; border-top: 1px solid var(--border-strong); }
+          .branch-divider { display: none; }
+          .divider-row { padding: 0 1.5rem; }
+          .footer { padding: 1.5rem; flex-direction: column; gap: 0.3rem; }
+          .logo-frame { width: 180px; height: 180px; }
+        }
       `}</style>
     </main>
   );
